@@ -18,7 +18,7 @@ type Task struct {
 	Cron          *string           `json:"cron"`
 	HttpMethod    string            `json:"httpMethod"`
 	HttpHeaders   http.Header       `json:"httpHeaders"`
-	Region        string            `json:"region"`
+	RegionID      string            `json:"regionId"`
 	Meta          map[string]string `json:"meta"`
 	OkStatusCodes []int             `json:"okStatusCodes"`
 }
@@ -33,7 +33,7 @@ type TaskInput struct {
 	Cron          *string           `json:"cron"`
 	HttpMethod    string            `json:"httpMethod"`
 	HttpHeaders   http.Header       `json:"httpHeaders"`
-	Region        string            `json:"region"`
+	RegionID      string            `json:"regionId"`
 	Meta          map[string]string `json:"meta"`
 	OkStatusCodes []int             `json:"okStatusCodes"`
 }
