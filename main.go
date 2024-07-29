@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 
 	"github.com/klauspost/compress/gzhttp"
@@ -58,7 +59,14 @@ func (cl *Client) CreateTask(ctx context.Context, spec TaskInput) (*Task, error)
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, errors.New("invalid status code returned")
+		err = errors.New("invalid status code returned")
+		body, _ := io.ReadAll(resp.Body)
+
+		return nil, &APIError{
+			err:    err,
+			body:   body,
+			status: resp.StatusCode,
+		}
 	}
 
 	var t Task
@@ -87,7 +95,14 @@ func (cl *Client) UpdateTask(ctx context.Context, id string, spec TaskInput) (*T
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, errors.New("invalid status code returned")
+		err = errors.New("invalid status code returned")
+		body, _ := io.ReadAll(resp.Body)
+
+		return nil, &APIError{
+			err:    err,
+			body:   body,
+			status: resp.StatusCode,
+		}
 	}
 
 	var t Task
@@ -111,7 +126,14 @@ func (cl *Client) DeleteTask(ctx context.Context, id string) error {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 204 {
-		return errors.New("invalid status code returned")
+		err = errors.New("invalid status code returned")
+		body, _ := io.ReadAll(resp.Body)
+
+		return &APIError{
+			err:    err,
+			body:   body,
+			status: resp.StatusCode,
+		}
 	}
 
 	return nil
@@ -131,7 +153,14 @@ func (cl *Client) ListTasks(ctx context.Context, id string, opts *ListOpts) (*Pa
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return nil, errors.New("invalid status code returned")
+		err = errors.New("invalid status code returned")
+		body, _ := io.ReadAll(resp.Body)
+
+		return nil, &APIError{
+			err:    err,
+			body:   body,
+			status: resp.StatusCode,
+		}
 	}
 
 	var pr PaginatedResponse
@@ -156,7 +185,14 @@ func (cl *Client) GetTask(ctx context.Context, id string) (*Task, error) {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return nil, errors.New("invalid status code returned")
+		err = errors.New("invalid status code returned")
+		body, _ := io.ReadAll(resp.Body)
+
+		return nil, &APIError{
+			err:    err,
+			body:   body,
+			status: resp.StatusCode,
+		}
 	}
 
 	var t Task

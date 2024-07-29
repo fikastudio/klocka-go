@@ -83,3 +83,13 @@ func (d *Duration) UnmarshalJSON(b []byte) (err error) {
 func (d Duration) MarshalJSON() (b []byte, err error) {
 	return []byte(fmt.Sprintf(`"%s"`, d.String())), nil
 }
+
+type APIError struct {
+	err    error
+	body   []byte
+	status int
+}
+
+func (e *APIError) Error() string {
+	return fmt.Sprintf("got status code %d: %v", e.status, e.Error())
+}
