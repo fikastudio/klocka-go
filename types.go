@@ -91,5 +91,5 @@ type APIError struct {
 }
 
 func (e *APIError) Error() string {
-	return fmt.Sprintf("got status code %d: %v", e.status, e.Error())
+	return fmt.Sprintf("got status code %d: %v", e.status, e.err.Error())
 }
