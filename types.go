@@ -95,3 +95,5 @@ func (e *APIError) Error() string {
 }
 
 func (e *APIError) Unwrap() error { return e.err }
+func (e *APIError) Status() int   { return e.status }
+func (e *APIError) Body() []byte  { return e.body }
