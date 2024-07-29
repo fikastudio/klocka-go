@@ -10,7 +10,7 @@ import (
 	"github.com/klauspost/compress/gzhttp"
 )
 
-const defaultEndpoint = "https://klocka.io/api"
+const defaultEndpoint = "https://klocka.dev/api"
 
 type Client struct {
 	apiKey    string
