@@ -70,7 +70,7 @@ func (cl *Client) CreateTask(ctx context.Context, spec TaskInput) (*Task, error)
 	}
 
 	var t Task
-	if err = json.NewDecoder(req.Body).Decode(&t); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&t); err != nil {
 		return nil, err
 	}
 
@@ -106,7 +106,7 @@ func (cl *Client) UpdateTask(ctx context.Context, id string, spec TaskInput) (*T
 	}
 
 	var t Task
-	if err = json.NewDecoder(req.Body).Decode(&t); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&t); err != nil {
 		return nil, err
 	}
 
@@ -164,7 +164,7 @@ func (cl *Client) ListTasks(ctx context.Context, id string, opts *ListOpts) (*Pa
 	}
 
 	var pr PaginatedResponse
-	if err = json.NewDecoder(req.Body).Decode(&pr); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&pr); err != nil {
 		return nil, err
 	}
 
@@ -196,7 +196,7 @@ func (cl *Client) GetTask(ctx context.Context, id string) (*Task, error) {
 	}
 
 	var t Task
-	if err = json.NewDecoder(req.Body).Decode(&t); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&t); err != nil {
 		return nil, err
 	}
 
