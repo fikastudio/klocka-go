@@ -1,10 +1,15 @@
 package klocka
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -97,3 +102,39 @@ func (e *APIError) Error() string {
 func (e *APIError) Unwrap() error { return e.err }
 func (e *APIError) Status() int   { return e.status }
 func (e *APIError) Body() []byte  { return e.body }
+
+func ConstructHeaders(payload []byte, secret string) http.Header {
+	timestamp := time.Now()
+	sig := ComputeSignature(timestamp, payload, secret)
+	sigBase64 := hex.EncodeToString(sig)
+	headers := http.Header{}
+
+	headers.Set("x-klocka-timestamp", fmt.Sprintf("%d", timestamp.Unix()))
+	headers.Set("x-klocka-signature", sigBase64)
+
+	return headers
+}
+
+func VerifyRequest(headers http.Header, payload []byte, secret string) error {
+	timestampStr, err := strconv.ParseInt(headers.Get("x-klocka-timestamp"), 10, 64)
+	if err != nil {
+		return fmt.Errorf("x-klocka-timestamp is invalid: %v", err)
+	}
+	timestamp := time.Unix(timestampStr, 0)
+
+	sig := ComputeSignature(timestamp, payload, secret)
+	sigBase64 := hex.EncodeToString(sig)
+	if sigBase64 != headers.Get("x-klocka-signature") {
+		return errors.New("x-klocka-signature does not match")
+	}
+
+	return nil
+}
+
+func ComputeSignature(t time.Time, payload []byte, secret string) []byte {
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write([]byte(fmt.Sprintf("%d", t.Unix())))
+	mac.Write([]byte("."))
+	mac.Write(payload)
+	return mac.Sum(nil)
+}

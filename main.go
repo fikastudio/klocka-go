@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -54,7 +55,7 @@ func (cl *Client) CreateTask(ctx context.Context, spec TaskInput) (*Task, error)
 
 	resp, err := cl.hcl.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("response error: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -71,7 +72,7 @@ func (cl *Client) CreateTask(ctx context.Context, spec TaskInput) (*Task, error)
 
 	var t Task
 	if err = json.NewDecoder(resp.Body).Decode(&t); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error decoding body: %v", err)
 	}
 
 	return &t, nil
