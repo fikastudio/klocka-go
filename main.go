@@ -126,7 +126,7 @@ func (cl *Client) DeleteTask(ctx context.Context, id string) error {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != 204 {
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		err = errors.New("invalid status code returned")
 		body, _ := io.ReadAll(resp.Body)
 
